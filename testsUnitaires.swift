@@ -7,25 +7,25 @@ func verifSearchPiecePosition() -> Int {
     var ret  : Int = 0
     var tdj = tableDeJeu()
 
-    // Premier cas  : 
+    // La position indiquee doit etre dans la tdj :
     if let piece = tdj.searchPiecePosition(coordX : -1 , coordY : 5){
-        print("[searchPiecePosition] Mal definie pour parametres <1 ou >4.")
+        print("[searchPiecePosition] est mal definie pour des parametres <1 ou >4.")
         ret = ret + 1;
     }
     else {
-        print("[searchPiecePosition] Bien definie pour parametres <1 ou >4.")
+        print("[searchPiecePosition] est bien definie pour des parametres <1 ou >4.")
     }
 
-    // Deuxieme cas  :
+    // La position doit indiquer une case non vide :
     if let piece = tdj.searchPiecePosition(coordX :1, coordY :2){
-        print("[searchPiecePosition] mal definie pour cases vides.")
+        print("[searchPiecePosition] est mal definie pour des cases vides.")
         ret = ret + 1
     }
     else {
-        print("[searchPiecePosition] bien definie pour cases vides.")
+        print("[searchPiecePosition] est bien definie pour des cases vides.")
     }
 
-    // Troisieme cas  : 
+    // La piece renvoyee est la bonne:
     if let piece = tdj.searchPiecePosition(coordX :2, coordY :2){
         if(piece.nom == "kodama" ){
             print("[searchPiecePosition] trouve correctement les pieces.")
@@ -43,47 +43,40 @@ func verifSearchPieceNJ() -> Int{
     var ret  : Int = 0;
     var tdj = tableDeJeu();
 
-    // Premier cas  : 
-    if let piece = tdj.searchPieceNJ(nom : "" , nbJoueur : 1 ){
-        print("[searchPieceNJ] mal definie pour nom vide.")
+    // Le nom ne doit pas etre vide :
+    if let piece = tdj.searchPieceNJ(nom : "" , joueur : tdj.j1 ){
+        print("[searchPieceNJ] est mal definie pour un nom vide.")
         ret = ret + 1;
     }
     else {
-        print("[searchPieceNJ] bien definie pour nom vide.")
-    }
-
-    // Deuxieme cas  :
-    if let piece = tdj.searchPieceNJ(nom :"kitsune", nbJoueur : 9999){
-        print("[searchPieceNJ] mal definie pour nombre joueur invalide.")
-        ret = ret + 1
-    }
-    else {
-        print("[searchPieceNJ] bien definie pour nombre joueur invalide.")
+        print("[searchPieceNJ] est bien definie pour un nom vide.")
     }
     
-    // Troisieme cas  : 
-    if let piece = tdj.searchPieceNJ(nom :"kitsunette", nbJoueur : 1){
-        print("[searchPieceNJ] mal definie pour nom piece invalide.")
+    // Le nom de joueur doit etre valide :
+    if let piece = tdj.searchPieceNJ(nom :"kitsunette", joueur : tdj.j1){
+        print("[searchPieceNJ] mal definie pour nom de piece invalide.")
         ret = ret + 1
     }
     else {
-        print("[searchPieceNJ] bien definie pour nom piece invalide.")
+        print("[searchPieceNJ] bien definie pour nom de piece invalide.")
     }
 
-    // Quatrieme et cinquieme cas  : 
-    if let piece = tdj.searchPieceNJ(nom :"kitsune", nbJoueur : 1){
+    // Bonne entree, test du renvoie :
+    if let piece = tdj.searchPieceNJ(nom :"kitsune", joueur : tdj.j1){
         if(piece.coordX == 3  && piece.coordY == 1) {
-            print("[searchPieceNJ] bien definie pour donnes valides")
+            print("[searchPieceNJ] bien definie pour donnees valides.")
         }
         else {
-            print("[searchPieceNJ] mal definie pour donnes valides  : il ne renvoie pas la bonne piece.")
-            ret = ret + 1
-        }    
+                print("[searchPieceNJ] mal definie pour donnees valides  : ne renvoie pas la bonne piece.")
+                ret = ret + 1
+            }
     }
+    
     else {
-        print("[searchPieceNJ] mal definie pour donnes valides : il renvoie Vide.")
+        print("[searchPieceNJ] mal definie pour donnees valides : il renvoie Vide.")
         ret = ret + 1
     }
+    
     return ret
 }
 
@@ -92,23 +85,24 @@ func verifPositionsPossibles() -> Int {
     var ret  : Int = 0
     var tdj  = TableDeJeu()
     var pc = tdj.searchPiecePosition(coordX : 1, coordY : 1) // tanuki de j1
-    var cpp = tdj.positionsPossibles(piece : pc)
-
+    var cpp = tdj.positionsPossibles(Piece : pc)
+    
+    // doit compter toutes les positions
     if (cpp.countPositions() == 0) {
         print("[positionsPossibles] Il y a des positions que vous n’avez pas trouve.")
     }
-
+    // on ne peut pas aller sur une de nos propres pieces
     for position in cpp {
         let (x , y) = position
         if( x == 1 && y == 2){
             print("[positionsPossibles] Vous avez bien trouve une position possible.")
         }
         else if(x == 2 && y == 1) {
-                print("[positionsPossibles] Il y a deja une piece de vous la-bas.")
+                print("[positionsPossibles] Il y a deja une piece ici.")
                 ret = ret + 1
             } 
             else {
-                print("[positionsPossibles] Vous n’avez pas respecte les regles de jeu, votre pièce ne peux pas se deplacer la, meme si la cas est vide.")
+                print("[positionsPossibles] Vous n’avez pas respecte les regles du jeu, votre piece ne peux pas se deplacer la, meme si la case est vide.") // depend du nom de la piece
                 ret = ret + 1
             }
     }
@@ -121,17 +115,17 @@ func verifValiderDeplacement() -> Int {
     var pc = tdj.searchPiecePosition(coordX : 1, coordY : 1) // tanuki de j1
     
     // Premier cas  : la case ou on veut deplacer n’est pas vide
-    var x = tdj.validerAction(piece :pc, coordX :2, coordY :1)
+    var x = tdj.validerDeplacement(piece :pc, coordX :2, coordY :1)
     if(x == true){
-        print("[validerDeplacement] On ne peux pas deplacer sur une autre piece amie. Mal defini.")
+        print("[validerDeplacement] On ne peux pas deplacer sur une autre piece amie : mal defini.")
         ret = ret + 1
     }
     else {
-        print("[validerDeplacement] Bien definie pour les cases deja occupees de nous.")
+        print("[validerDeplacement] Bien definie pour les cases deja occupees par nous-meme.")
     }
-
-    // Deuxieme cas  : la case est vide, mais pas touchable
-    x = tdj.validerAction(piece : pc, coordX : 1, coordY : 3)
+    
+    // Deuxieme cas  : la case est vide, mais pas atteignable
+    x = tdj.validerDeplacement(piece : pc, coordX : 1, coordY : 3)
     if(x==true){
         print("[validerDeplacement] On ne peux pas deplacer sur les cases vides, mais pas touchables! Mal defini.")
         ret = ret + 1
@@ -139,9 +133,9 @@ func verifValiderDeplacement() -> Int {
     else {
         print("[validerDeplacement] Bien definie pour les cases vides et pas touchables.")
     }
-
-    // troisieme cas  : la case est vide et touchable
-    x = tdj.validerAction(piece :pc, coordX :1, coordY :2)
+    
+    // Troisieme cas  : la case est vide et atteignable
+    x = tdj.validerDeplacement(piece :pc, coordX :1, coordY :2)
     if(x==false){
         print("[validerDeplacement] On peux deplacer sur les cases touchables et vides! Mal defini.")
         ret = ret + 1
@@ -149,9 +143,9 @@ func verifValiderDeplacement() -> Int {
     else {
         print("[validerDeplacement] Bien definie pour les cases touchables et vides.")
     }
-
+    
     // quatrieeme  : positions invalides
-    x = tdj.validerAction(piece :pc, coordX :2, coordY :7)
+    x = tdj.validerDeplacement(piece :pc, coordX :2, coordY :7)
     if(x == true){
         print("[validerDeplacement] Mal defini pour positions invalides.")
         ret = ret + 1
@@ -159,29 +153,30 @@ func verifValiderDeplacement() -> Int {
     else {
         print("[validerDeplacement] Bien definie pour positions invalides.")
     }
- 
-    return ret       
+    
+    return ret
 }
 
 func verifDeplacerPiece() -> Int {
+    
     // mutating func deplacerPiece(piece : Piece, xApres  : Int, yApres  : Int)
     var ret  : Int = 0
     var tdj = TableDeJeu()
     var pc = tdj.searchPiecePosition(coordX  : 1,coordY  : 1) // tanuki de j1
-
     var tdj2 = tdj.deplacerPiece(piece : pc, xApres : 1 , yApres : 2)
     var tdj3 = tdj.deplacerPiece(piece : pc, xApres : 2 , yApres : 1)
-
+    
+    // La tdj doit avoir change apres le deplacement
     if(tdj2 == tdj){
         print("Mal defini pour deplacements valides")
         ret = ret + 1
     }
-
+    
     if(tdj3 != tdj){
         print("Mal defini pour deplacements invalides")
         ret = ret + 1
     }
-
+    
     return ret
 }
 
@@ -190,29 +185,29 @@ func verifValiderCapture() -> Int {
     var tdj = TableDeJeu()
     var pc = tdj.searchPiecePosition(coordX : 1, coordY : 1) // tanuki de j1
     
-    // Premier cas  : la case qu'on veut capturer est une de nos cases
+    // Premier cas  : la piece que l'on veut capturer ne peut pas etre a nous
     var x = tdj.validerCapture(piece :pc, coordX :2, coordY :1)
     if(x == true){
-        print("[validerCapture] On ne peux pas capturer une autre piece amie. Mal definie.")
+        print("[validerCapture] On ne peux pas capturer une autre piece amie: mal definie.")
         ret = ret + 1
     }
     else {
         print("[validerCapture] Bien definie pour les cases occupees de nous.")
     }
-
-    // Deuxieme cas  : la case est de l'autre, mais pas touchable
-    x = tdj.validerAction(piece : pc, coordX : 1, coordY : 4)
+    
+    // Deuxieme cas  : la piece est a l'ennemi, mais pas atteignable
+    x = tdj.validerCapture(piece : pc, coordX : 1, coordY : 4)
     if(x == true){
-        print("[validerCapture] On ne peux pas capturer sur les cases ennemies, mais pas touchables. Mal definie.")
+        print("[validerCapture] On ne peux pas capturer sur les cases ennemies, mais pas touchables: mal definie.")
         ret = ret + 1
     }
     else {
         print("[validerCapture] Bien definie pour les cases ennemies et pas touchables.")
     }
-
-    // troisieme cas  : la case est ennemie et touchable
+    
+    // troisieme cas  : la case est ennemi et atteignable
     pc = tdj.searchPiecePosition(coordX : 2, coordY : 2) // kodama de j1
-    x = tdj.validerAction(piece : pc, coordX : 2, coordY : 3)
+    x = tdj.validerCapture(piece : pc, coordX : 2, coordY : 3)
     if(x == false){
         print("[validerCapture] On peux attaquer les cases touchables et ennemies! Mal defini.")
         ret = ret + 1
@@ -220,112 +215,116 @@ func verifValiderCapture() -> Int {
     else {
         print("[validerCapture] Bien definie pour les cases touchables et ennemies.")
     }
-
-    // quatrieeme  : positions invalides
-    x = tdj.validerAction(piece :pc, coordX :2, coordY :7)
+    
+    // quatrieme cas : les positions sont invalides
+    x = tdj.validerCapture(piece :pc, coordX :2, coordY :7)
     if(x == true){
-        print("[validerCapture] Mal defini pour positions invalides.")
+        print("[validerCapture] Mal defini pour une position invalide.")
         ret = ret + 1
     }
     else {
-        print("[validerCapture] Bien definie pour positions invalides.")
+        print("[validerCapture] Bien definie pour une position invalide.")
     }
- 
-    return ret       
+    
+    return ret
 }
 
 func verifGagnerPartie() -> Int {
     var ret  : Int = 0
     var tdj = TableDeJeu()
-
+    
     // en debut de partie, on a pas de gagnant
-    if (tdj.gagnerPartie(joueur  : tdj.joueur1) || tdj.gagnerPartie(joueur  : tdj.joueur2)){
+    if (tdj.gagnerPartie(joueur : tdj.joueur1) || tdj.gagnerPartie(joueur : tdj.joueur2)){
         print("[gagnerPartie] En debut de partie il n’y a pas de gagnant, gagnerPartie mal definie.")
         ret = ret + 1
     }
     else{
-        print("[gagnerPartie] En debut de partie il n’y a pas de gagnant, gagnerPartie bien definie.")   
+        print("[gagnerPartie] En debut de partie il n’y a pas de gagnant, gagnerPartie bien definie.")
     }
-
+    
     return ret
-
+    
 }
 
 func verifTransformerKodama() -> Int {
     var ret  : Int = 0
     var tdj = TableDeJeu()
-
+    
     var pc = tdj.searchPiecePosition(coordX : 1, coordY : 1)
+    
+    //La piece doit etre un kodama
     do{
         try tdj.trasformerKodama(pc)
-        print("[transformerKodama] On ne peux pas transformer une piece qui n'est pas un kodama. Mal definie.")
+        print("[transformerKodama] On ne peux pas transformer une piece qui n'est pas un kodama: mal definie.")
         ret = ret + 1
     }
     catch{
-        print("[transformerKodama] On ne peux pas transformer une piece qui n'est pas un kodama. Bien definie.")
+        print("[transformerKodama] On ne peux pas transformer une piece qui n'est pas un kodama: bien definie.")
     }
-
+    
+    //Il faut que le kodama en question soit dans la zone de promotion
     pc = tdj.searchPiecePosition(coordX : 2, coordY : 2)
     do{
         try tdj.trasformerKodama(pc)
-        print("[transformerKodama] On ne peux pas transformer une kodama qui n'est pas dans la zone de promotion. Mal definie.")
+        print("[transformerKodama] On ne peux pas transformer une kodama qui n'est pas dans la zone de promotion: mal definie.")
         ret = ret + 1
     }
     catch{
-        print("[transformerKodama] On ne peux pas transformer une kodama qui n'est pas dans la zone de promotion. Bien definie.")
+        print("[transformerKodama] On ne peux pas transformer une kodama qui n'est pas dans la zone de promotion: bien definie.")
     }
     return ret
 }
 
 func verifParachuter() -> Int {
-
+    
     var ret  : Int = 0
     var tdj = TableDeJeu()
-    var pc : Piece = tdj.searchPieceNJ(nom: "kodama", nbJoueur : 1)
-
-    // maintenant il n’y a rien dans la réserve, c'est l'etat initiel
+    var pc : Piece = tdj.searchPieceNJ(nom: "kodama", joueur : tdj.j1)
+    
+    // A l'etat inintial il n'y a rien dans la reserve, donc pas de parachutage possible
     do{
         try tdj.parachuter(nomPiece: "kodama", tdj.joueur1, neufX : 1, neufY : 2)
         print("[parachuter] On ne peut pas parachuter un element sans qu’il ne soit dans la reserve, meme si la case est vide.")
         ret = ret + 1
     }
     catch{
-        print("[parachuter] Bien definie pour pieces non existant dans la reserve.")
+        print("[parachuter] Bien definie pour les pieces non existantes dans la reserve.")
     }
-
     
-
+    
     tdj = tdj.attaquerPiece(pieceAttaquante : pc, xApres : 2, yApres : 3)
-    var pc2 : Piece = tdj.searchPieceNJR("kodama", nbJoueur : 1, estEnReserve : true)
-
+    var pc2 : Piece = tdj.searchPieceNJ("kodama", joueur : tdj.j1, estEnReserve : true)
+    
+    //Une piece peut etre parachutee sur une case vide
     do{
-    	try tdj.parachuter(nomPiece: "kodama", joueur : tdj.joueur1, neufX : 1, neufY : 2)
-    	print("[parachuter] Bien definie pour pieces existant dans la reserve et mises sur cases vides.")
+        try tdj.parachuter(nomPiece: "kodama", joueur : tdj.joueur1, neufX : 1, neufY : 2)
+        print("[parachuter] Bien definie pour les pieces existantes dans la reserve et mises sur des cases vides.")
     }
     catch{
-    	print("[parachuter] Mal definie pour pieces existant dans la reserve et mises sur cases vides.")
-    	ret = ret + 1
+        print("[parachuter] Mal definie pour les pieces existantes dans la reserve et mises sur des cases vides.")
+        ret = ret + 1
     }
-
+    //Une piece ne peut pas etre parachutee sur une case non vide
     do{
-    	try tdj.parachuter(nomPiece: "kodama", joueur : tdj.joueur1, neufX : 3, neufY : 1)
-    	print("[parachuter] Mal definie pour pieces existant dans la reserve et mises sur cases non vides.")
-    	ret = ret + 1
+        try tdj.parachuter(nomPiece: "kodama", joueur : tdj.joueur1, neufX : 3, neufY : 1)
+        print("[parachuter] Mal definie pour les pieces existantes dans la reserve et mises sur des cases non vides.")
+        ret = ret + 1
     }
     catch{
-    	print("[parachuter] Bien definie pour pieces existant dans la reserve et mises sur cases vides.")
+        print("[parachuter] Bien definie pour les pieces existantes dans la reserve et mises sur des cases vides.")
     }
-
+    
     return ret
-
+    
 }
 
 func verifEstEnPromotion() -> Int {
-
+    
     var ret  : Int = 0
     var tdj = TableDeJeu()
     var pc : Piece = tdj.searchPiecePosition(coordX : 1 , coordY : 1)
-
+    
+    // en debut de partie on doit verifier que les pieces d'un joueur ne sont pas dans la zone de promotion
     if(tdj.estEnPromotion(pc)){
         print("[estEnPromotion] Mal definie.")
         ret = ret + 1
@@ -333,9 +332,9 @@ func verifEstEnPromotion() -> Int {
     else{
         print("[estEnPromotion] Bien definie.")
     }
-
+    
     return ret
-
+    
 }
 
 // Main
@@ -354,5 +353,5 @@ resFinal += verifEstEnPromotion()
 if resFinal == 0 {
     print("Tous les tests sont passes !")
 } else{
-    print("Quelques tests echoues. Regardez au-dessus pour details.")
+    print("Quelques tests echouent. Regardez au-dessus pour plus de details.")
 }

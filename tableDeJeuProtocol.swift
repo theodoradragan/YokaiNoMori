@@ -1,20 +1,26 @@
-import Foundation 
+import Foundation
 
-protocol tableDeJeuProtocol : CollectionPiecesProtocol {
+protocol tableDeJeuProtocol : collectionPiecesProtocol {
 
-	typealias Piece = pieceProtocol
+    typealias Piece = pieceProtocol
     typealias Joueur = joueurProtocol
-
-	var joueur1 : Joueur {get}
-	var joueur2 : Joueur {get}
+    associatedtype CollectionPositions : collectionPositionsProtocol
+    
+    
+	var joueur1 : Joueur{get}
+	var joueur2 : Joueur{get}
+    
+    var reserve1 : Joueur {get set}
+    var reserve2 : Joueur {get set}
 
 	// init : -> tableDeJeu
-	// creation d’une table de jeu: on initialise la table de jeu, les 2 joueurs et apres, les pieces
+	// creation d’une table de jeu: on initialise la table de jeu, les 2 joueurs, les 2 reserves
+    // et apres, les pieces
 	init()
 
 	// positionsPossibles : tableDeJeu x Piece -> CollectionPositions
 	// evaluation des toutes les futurs positions disponibles pour une pièce
-	func positionsPossibles(Piece: Piece) -> CollectionPositions 
+	func positionsPossibles(Piece: Piece) -> CollectionPositions
 
 	// validerDeplacement : tableDeJeu x Piece x Int x Int -> Bool
 	// verifie qu'une Piece a bien le droit d'aller à l'emplacement indique
@@ -22,12 +28,14 @@ protocol tableDeJeuProtocol : CollectionPiecesProtocol {
 	// Post : renvoie True si le deplacement respecte les regles du jeu, et False sinon 
 	func validerDeplacement(Piece : Piece, neufX : Int, neufY : Int) -> Bool
 
-	// validerCapture : tableDeJeu x Piece x Int x Int -> Bool
+	
+    // validerCapture : tableDeJeu x Piece x Int x Int -> Bool
 	// verifie qu'une Piece a bien le droit d'attaquer à l'emplacement indique
 	// Pre: sur (neufX, neufY) il y a une piece ennemi
 	// Post : renvoie True si le capturement respecte les regles du jeu, et False sinon 
 	func validerCapture(Piece : Piece, neufX : Int, neufY : Int) -> Bool
-
+    
+    
 	// deplacerPiece : tableDeJeu x Piece x Int x Int -> tableDeJeu
 	// deplace une Piece d'une position à une autre 
 	// Pre : le deplacement est valide, conforme au validerDeplacement
@@ -36,13 +44,13 @@ protocol tableDeJeuProtocol : CollectionPiecesProtocol {
 	@discardableResult
 	mutating func deplacerPiece(Piece: Piece, xApres : Int, yApres : Int) -> Self
 
-	// attaquerPiece : tableDeJeu x Piece x Piece -> tableDeJeu
-	// attaquer une pièce de l’autre joueur (donnee par le deuxieme parametre) avec une Piece de le joueur courant
+	// capturerPiece : tableDeJeu x Piece x Piece -> tableDeJeu
+	// capture une pièce de l’autre joueur (donnee par le deuxieme parametre) avec une Piece de le joueur courant
 	// Pre : la capture est valide, conforme au validerDeplacement
 	// Post : si les preconditions sont satisfaites, les deux Pieces changent leurs positions 
-	//	et la pièce attaquee est dans la reserve de le joueur attaquant . Sinon, l’etat de la table de jeu reste le meme.
+	//	et la pièce capturee est dans la reserve de le joueur attaquant . Sinon, l’etat de la table de jeu reste le meme.
 	@discardableResult
-	mutating func attaquerPiece(pieceAttaquante : Piece, xApres : Int, yApres : Int) -> Self
+	mutating func capturerPiece(pieceAttaquante : Piece, xApres : Int, yApres : Int) -> Self
 
 	// transformerKodama : tableDeJeu x Piece
 	// transforme un "kodama" en "kodama samourai" ou la chose inverse
@@ -67,7 +75,7 @@ protocol tableDeJeuProtocol : CollectionPiecesProtocol {
     // Pre : la pneuf case est libre avant parachuter
     // Post : si les preconditions sont respectees, l’etat de la pièce est change
 	@discardableResult
-	mutating func parachuter(nomPiece: String, joueur : Joueur, neufX : Int, neufY : Int) throws -> Self
+    mutating func parachuter(piece : Piece, neufX : Int, neufY : Int) throws -> Self
 
 	// gagnerPartie : tableDeJeu x Joueur -> Bool
 	// verifie si la partie est gagnée par le joueur indique par le parametre
