@@ -1,11 +1,9 @@
 import Foundation 
 
-// tableDeJeu est une collection de Pieces
+protocol tableDeJeuProtocol : CollectionPiecesProtocol {
 
-protocol tableDeJeuProtocol : Sequence {
-
-	// l'iterateur associe
-	associatedtype CollectionPiecesIterateur : IteratorProtocol where CollectionPiecesIterateur.Element == Piece 
+	typealias Piece = pieceProtocol
+    typealias Joueur = joueurProtocol
 
 	var joueur1 : Joueur {get}
 	var joueur2 : Joueur {get}
@@ -13,28 +11,6 @@ protocol tableDeJeuProtocol : Sequence {
 	// init : -> tableDeJeu
 	// creation d’une table de jeu: on initialise la table de jeu, les 2 joueurs et apres, les pieces
 	init()
-
-	// searchPiecePosition : Int x Int -> (Piece | Vide)
-	// fonction pour chercer une pièce selon sa position
-	// Pre : le touple correspond a un pair des (coordX, coordY) detenues par une pièce
-	// Post : la piece cherche si la precondition est respectee, sinon retourne Vide
-	func searchPiece(coordX : Int, coordY : Int) -> Piece?
-
-	// searchPieceNJ : String x Int -> (Piece | Vide)
-	// fonction pour chercer une pièce selon son nom et son joueur
-	// Pre : le String est non vide et corresponde a un nom valide de pièce
-	// Pre : le nombre de Joueur existe parmi les joueurs
-	// Post : la Pièce cherche si la precondition est respectee, sinon retourne Vide
-	// ON GARDE CA ???
-	func searchPieceNJ(nom : String, nbJoueur : Int) -> Piece?
-
-	// searchPieceNJR : String x Int x Boolean -> (Piece | Vide)
-	// fonction pour chercer une pièce selon son nom et son joueur, dans la table (Boolean False) ou dans la reserve (Boolean True)
-	// Pre : le String est non vide et corresponde a un nom valide de pièce
-	// Pre : le nombre de Joueur existe parmi les joueurs
-	// Post : la Pièce cherche si la precondition est respectee, sinon retourne Vide
-	func searchPieceNJR(nom : String, nbJoueur : Int, estEnReserve : Bool) -> Piece?
-
 
 	// positionsPossibles : tableDeJeu x Piece -> CollectionPositions
 	// evaluation des toutes les futurs positions disponibles pour une pièce
@@ -98,9 +74,5 @@ protocol tableDeJeuProtocol : Sequence {
 	// Pre : aucune 
 	// Post : renvoie true si le jouer donne a gagne, false sinon
 	func gagnerPartie(joueur : Joueur) -> Bool
-
-	// makeIterator : tableDeJeuProtocol -> CollectionPiecesIterateur
-    // crée un itérateur sur le collection pour itérer avec for in.
-    func makeIterator() -> CollectionPiecesIterateur
 
 }

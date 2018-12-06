@@ -1,6 +1,8 @@
 import Foundation
 
 protocol pieceProtocol {
+    typealias Piece = pieceProtocol
+    typealias Joueur = joueurProtocol
 
 	// Le nom signifie le type de yokai : “koropokkuru”, ”kitsune”, etc
 	var nom : String{get set}
@@ -18,14 +20,12 @@ protocol pieceProtocol {
 	var joueur : Joueur{get}
 
 	// Pour savoir si la pièce est en Reserve :
-	var estEnReserve : Bool{get}
+	// var estEnReserve : Bool{get}
 
 	// creation d'une Piece avec des parametres donnes
 	// init : String x int x int x Joueur-> Piece
 	// Pre : les parametres donnes sont valides. Sinon, la creation echoue 
 	init?(nom : String, coordX : Int, coordY : Int, joueur : Joueur) throws
-
-
 
 	// estEnPromotion : Piece -> Bool
 	// verifie si une piece est dans la zone de promotion adverse
